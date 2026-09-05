@@ -1,0 +1,307 @@
+{
+  "name": "تنبيه وظائف",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 15
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        0,
+        0
+      ],
+      "id": "bbca0f8d-fd97-4ffb-913a-947e6678ab88",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "url": "YOUR_JOB_SITE_URL",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        208,
+        0
+      ],
+      "id": "729122ca-b823-49bb-aa3a-35beed6eaba7",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "operation": "extractHtmlContent",
+        "extractionValues": {
+          "values": [
+            {
+              "key": "jobTitles",
+              "cssSelector": "a[href*=\"/jobs/\"]",
+              "returnArray": true
+            },
+            {
+              "key": "jobLinks",
+              "cssSelector": "a[href*=\"/jobs/\"]",
+              "returnValue": "attribute",
+              "attribute": "href",
+              "returnArray": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.html",
+      "typeVersion": 1.2,
+      "position": [
+        432,
+        0
+      ],
+      "id": "fac9195f-23f0-47be-91d6-c57bb41313b4",
+      "name": "HTML"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "YOUR_TABLE_ID",
+          "mode": "list",
+          "cachedResultName": "jop_2026"
+        }
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        672,
+        0
+      ],
+      "id": "ef135e0d-eb7d-43d8-8ae8-5694f49d1f90",
+      "name": "Get row(s)",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "jsCode": "const htmlData = $('HTML').first().json; const newTitles = htmlData.jobTitles || []; const newLinks = htmlData.jobLinks || []; const storedRows = $input.all(); const storedLinks = storedRows.map(row => row.json.jobLink); const newJobs = []; for (let i = 0; i < newLinks.length; i++) { if (!storedLinks.includes(newLinks[i])) { newJobs.push({ json: { title: newTitles[i], link: newLinks[i] } }); } } return newJobs;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        896,
+        0
+      ],
+      "id": "9299f9e6-b9d5-491e-a3fa-3bc0f407fc5f",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "YOUR_TABLE_ID",
+          "mode": "list",
+          "cachedResultName": "jop_2026"
+        }
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        912,
+        208
+      ],
+      "id": "40d4c533-5140-40ce-8266-f87d07fe3020",
+      "name": "Get row(s)1"
+    },
+    {
+      "parameters": {
+        "sendTo": "YOUR_EMAIL@gmail.com",
+        "subject": "={{ $json.jobCount }} وظيفة جديدة - وظفني",
+        "emailType": "text",
+        "message": "={{ $json.combinedMessage }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        656,
+        208
+      ],
+      "id": "fd9de96f-9856-475e-bbb8-08d9a039290e",
+      "name": "Send a message",
+      "alwaysOutputData": false,
+      "credentials": {}
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.link }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        16,
+        208
+      ],
+      "id": "4f0aeac3-2b52-4e21-a957-fb251f2eb224",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "operation": "extractHtmlContent",
+        "extractionValues": {
+          "values": [
+            {
+              "key": "=officialLink",
+              "cssSelector": "a:contains(\"رابط التقديم\")",
+              "returnValue": "attribute",
+              "attribute": "href"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.html",
+      "typeVersion": 1.2,
+      "position": [
+        192,
+        208
+      ],
+      "id": "66a5499d-12d3-4ad2-9f70-da00ff2123ec",
+      "name": "HTML1"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all(); const now = new Date().toLocaleString('ar-SA', { timeZone: 'Asia/Riyadh' }); let message = 'تم رصد ' + items.length + ' وظيفة جديدة بتاريخ ' + now + ':\\n\\n'; items.forEach(function(item, index) { const title = item.json.title || 'وظيفة'; const officialLink = item.json.officialLink || item.json.link; message += (index + 1) + '. ' + title + '\\n' + officialLink + '\\n\\n'; }); return [{ json: { combinedMessage: message, jobCount: items.length } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        432,
+        208
+      ],
+      "id": "3dd04951-5241-4124-83a2-75a0430ac741",
+      "name": "Code in JavaScript1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "HTML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTML": {
+      "main": [
+        [
+          {
+            "node": "Get row(s)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s)": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s)1": {
+      "main": [
+        []
+      ]
+    },
+    "Send a message": {
+      "main": [
+        [
+          {
+            "node": "Get row(s)1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "HTML1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTML1": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "nodeGroups": []
+}
