@@ -42,12 +42,12 @@
           "values": [
             {
               "key": "jobTitles",
-              "cssSelector": "a[href*=\"/jobs/\"]",
+              "cssSelector": "a[href*=\"YOUR_JOB_LINK_PATTERN\"]",
               "returnArray": true
             },
             {
               "key": "jobLinks",
-              "cssSelector": "a[href*=\"/jobs/\"]",
+              "cssSelector": "a[href*=\"YOUR_JOB_LINK_PATTERN\"]",
               "returnValue": "attribute",
               "attribute": "href",
               "returnArray": true
@@ -157,7 +157,7 @@
           "values": [
             {
               "key": "=officialLink",
-              "cssSelector": "a:contains(\"رابط التقديم\")",
+              "cssSelector": "a:contains(\"YOUR_APPLY_LINK_TEXT\")",
               "returnValue": "attribute",
               "attribute": "href"
             }
