@@ -10,7 +10,7 @@
 
 كيف تستخدمه
 
-1. حمل/ي الملف jobs-workspace-26.json من هنا
+1. حمل/ي الملف jobs-workspace-26.json [من هنا](jobs-workspace-26.json)
 
 2. ادخل/ي https://app.n8n.cloud وسجل/ي دخول
 
