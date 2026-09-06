@@ -10,9 +10,9 @@
 
 كيف تستخدمه
 
-1. حمل/ي الملف jobs-workspace-26.jsos من هنا
+1. حمل/ي الملف jobs-workspace-26.json من هنا
 
-2. ادخل/ي htنعtps://app.n8n.cloud وسجل/ي دخول
+2. ادخل/ي https://app.n8n.cloud وسجل/ي دخول
 
 3. اضغط/ي Import واختار/ي الملف
 
@@ -65,9 +65,7 @@ jobs-workspace-26.json - الأتمتة نفسها
 
 README.md - الملف الحالي
 
-دليل_الاستيراد.docx - شرح مفصل خطوة بخطوة
-
-.env.example - قائمة المتغيرات
+IMPORT_GUIDE.md - شرح مفصل خطوة بخطوة
 
 ---
 
