@@ -61,6 +61,8 @@
 | YOUR_EMAIL@gmail.com | في Send a message node | ضع بريدك الحقيقي |
 | YOUR_JOB_SITE_URL | في HTTP Request node | ضع رابط موقع الوظائف |
 | YOUR_TABLE_ID | في Get row nodes | اختار جدول من n8n |
+| YOUR_JOB_LINK_PATTERN | في node اسمه HTML | جزء ثابت من رابط إعلانات الوظائف بموقعك |
+| YOUR_APPLY_LINK_TEXT | في node اسمه HTML1 | نص زر أو رابط التقديم بموقعك |
 
 ## الخطوة 5: ربط Gmail
 
@@ -88,7 +90,18 @@
 - اضغط عليه
 - ابحث عن خانة URL
 - غير YOUR_JOB_SITE_URL برابط الموقع الحقيقي
-- مثال: https://www.bayt.com/en/jobs/
+
+في node اسمه HTML:
+- اضغط عليه
+- بتشوفين قيمة مكتوب فيها YOUR_JOB_LINK_PATTERN
+- افتحي موقع الوظائف اللي اخترتيه بالمتصفح ودوري على رابط أي إعلان وظيفة (شكله عادة يكون فيه كلمة ثابتة زي jobs أو vacancy)
+- خذي هذي الكلمة الثابتة وحطيها بدل YOUR_JOB_LINK_PATTERN
+
+في node اسمه HTML1:
+- اضغط عليه
+- بتشوفين قيمة مكتوب فيها YOUR_APPLY_LINK_TEXT
+- افتحي صفحة أي إعلان وظيفة بموقعك، ودوري على الزر أو الرابط اللي يوديك لصفحة التقديم
+- انسخي النص المكتوب عليه بالضبط وحطيه بدل YOUR_APPLY_LINK_TEXT
 
 في Get row nodes:
 - اضغط على ال node الاول
